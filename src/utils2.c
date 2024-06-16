@@ -47,16 +47,15 @@ void	custom_usleep(long long time_in_ms)
 	while ((current_t = get_the_time()) - start_time < time_in_ms)
 		usleep(100);
 }
-int	death_check(t_philo *philo)
+int death_check(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->info->mut_dead);
-	if (philo->info->dead)
-	{
-		pthread_mutex_unlock(&philo->info->mut_dead);
-		return (1);
-	}
-	pthread_mutex_unlock(&philo->info->mut_dead);
-	return (0);
+    int is_dead;
+
+    pthread_mutex_lock(&philo->info->mut_dead);
+    is_dead = philo->info->dead;
+    pthread_mutex_unlock(&philo->info->mut_dead);
+
+    return is_dead;
 }
 
 void print_message(t_philo *philo, char *message)

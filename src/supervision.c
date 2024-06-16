@@ -12,6 +12,7 @@
 
 #include "../philosophers.h"
 
+
 int dead(t_philo *philo)
 {
     long long time_since_last_meal;
@@ -22,6 +23,23 @@ int dead(t_philo *philo)
     pthread_mutex_unlock(philo->m);
     return (not_eating);
 }
+
+/*
+int dead(t_philo *philo)
+{
+    long long time_since_last_meal;
+    int is_dead = 0;
+
+    pthread_mutex_lock(philo->m);
+    time_since_last_meal = get_the_time() - philo->meal_prev;
+    if (time_since_last_meal > philo->die_t)
+    {
+        is_dead = 1;
+    }
+    pthread_mutex_unlock(philo->m);
+    return is_dead;
+}
+*/
 
 int all_philos_fed(t_info *info)
 {

@@ -47,7 +47,6 @@ void philo_eat(t_philo *philo)
     pthread_mutex_t *first_fork;
     pthread_mutex_t *second_fork;
 
-    // Determine the order of forks to avoid deadlocks
     if (philo->id % 2 == 0)
     {
         first_fork = philo->left_f;
@@ -61,14 +60,16 @@ void philo_eat(t_philo *philo)
 
     pthread_mutex_lock(first_fork);
     print_message(philo, "has taken a fork");
+
     if (philo->info->nbr_philo == 1)
     {
         custom_usleep(philo->die_t);
         pthread_mutex_unlock(first_fork);
         print_message(philo, "died");
-        philo->info->dead = 1; // Mark the simulation as finished
+        philo->info->dead = 1;
         return;
     }
+
     pthread_mutex_lock(second_fork);
     print_message(philo, "has taken a fork");
     print_message(philo, "is eating");
@@ -83,35 +84,38 @@ void philo_eat(t_philo *philo)
 
     pthread_mutex_unlock(second_fork);
     pthread_mutex_unlock(first_fork);
-
-    // Immediate death check after eating
-    if (dead(philo))
-    {
-        print_message(philo, "died");
-        pthread_mutex_lock(&philo->info->mut_dead);
-        philo->info->dead = 1;
-        pthread_mutex_unlock(&philo->info->mut_dead);
-    }
 }
+
 
 void *philo_activities(void *arg)
 {
-    t_philo *philo;
-
-    philo = (t_philo *)arg;
+    t_philo *philo = (t_philo *)arg;
     if (philo->id % 2 == 0)
         custom_usleep(50);
-    while (!death_check(philo) && !philo->info->dead) // Check for global death condition
+
+    while (1) // Changed condition to always loop
     {
+        // Exit loop if simulation is stopped
+        if (death_check(philo))
+            break;
+
         philo_eat(philo);
-        if (death_check(philo) || philo->info->dead)
+        if (death_check(philo))
             break;
+
         philo_sleep(philo);
-        if (death_check(philo) || philo->info->dead)
+        if (death_check(philo))
             break;
+
         philo_think(philo);
-        if (philo->meal_count >= philo->info->times_eating)
+        if (death_check(philo))
+            break;
+
+        if (philo->meal_count >= philo->info->times_eating && philo->info->times_eating != -1)
             break; // Stop if the philosopher has eaten enough times
     }
+
     return NULL;
 }
+
+
