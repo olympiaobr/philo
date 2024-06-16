@@ -69,11 +69,8 @@ void	print_message(t_philo *philo, char *message)
 	}
 	pthread_mutex_unlock(&philo->info->mut_dead);
 	pthread_mutex_lock(&philo->info->mut_write);
-		// Lock before reading the start time
 	timestamp = time_diff(philo->info->start, NULL);
-		// Use info->start for consistency
 	pthread_mutex_unlock(&philo->info->mut_write);
-		// Unlock after reading the start time
 	pthread_mutex_lock(&philo->info->print);
 	printf("%lld %d %s\n", timestamp, philo->id, message);
 	pthread_mutex_unlock(&philo->info->print);
