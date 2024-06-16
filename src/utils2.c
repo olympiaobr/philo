@@ -19,7 +19,7 @@ long long	get_the_time(void)
 
 	if (gettimeofday(&t, NULL) != 0)
 	{
-        ft_err("gettimeofday failed\n");
+		ft_err("gettimeofday failed\n");
 		return (-1);
 	}
 	curr_t = (t.tv_sec * 1000) + (t.tv_usec / 1000);
@@ -47,28 +47,34 @@ void	custom_usleep(long long time_in_ms)
 	while ((current_t = get_the_time()) - start_time < time_in_ms)
 		usleep(100);
 }
-int death_check(t_philo *philo)
+int	death_check(t_philo *philo)
 {
-    int is_dead;
+	int	is_dead;
 
-    pthread_mutex_lock(&philo->info->mut_dead);
-    is_dead = philo->info->dead;
-    pthread_mutex_unlock(&philo->info->mut_dead);
-
-    return is_dead;
+	pthread_mutex_lock(&philo->info->mut_dead);
+	is_dead = philo->info->dead;
+	pthread_mutex_unlock(&philo->info->mut_dead);
+	return (is_dead);
 }
 
-void print_message(t_philo *philo, char *message)
+void	print_message(t_philo *philo, char *message)
 {
-    long long timestamp;
+	long long	timestamp;
 
-    if (death_check(philo))
-        return;
-    pthread_mutex_lock(&philo->info->mut_write); // Lock before reading the start time
-    timestamp = time_diff(philo->info->start, NULL); // Use info->start for consistency
-    pthread_mutex_unlock(&philo->info->mut_write); // Unlock after reading the start time
-
-    pthread_mutex_lock(&philo->info->print);
-    printf("%lld %d %s\n", timestamp, philo->id, message);
-    pthread_mutex_unlock(&philo->info->print);
+	pthread_mutex_lock(&philo->info->mut_dead);
+	if (philo->info->dead && strcmp(message, "died") != 0)
+	{
+		pthread_mutex_unlock(&philo->info->mut_dead);
+		return ;
+	}
+	pthread_mutex_unlock(&philo->info->mut_dead);
+	pthread_mutex_lock(&philo->info->mut_write);
+		// Lock before reading the start time
+	timestamp = time_diff(philo->info->start, NULL);
+		// Use info->start for consistency
+	pthread_mutex_unlock(&philo->info->mut_write);
+		// Unlock after reading the start time
+	pthread_mutex_lock(&philo->info->print);
+	printf("%lld %d %s\n", timestamp, philo->id, message);
+	pthread_mutex_unlock(&philo->info->print);
 }
