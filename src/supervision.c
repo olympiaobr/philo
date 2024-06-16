@@ -115,7 +115,7 @@ void *philo_supervision(void *arg)
             break;
         if (track_death(info))
             break;
-        custom_usleep(1000);
+        custom_usleep(100);
     }
     return (NULL);
 }
