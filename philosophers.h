@@ -36,42 +36,44 @@ typedef enum s_action
 	DIED,
 }	t_action;
 
-typedef struct s_philo
-{
-	pthread_t		id_thread;
-	int			id;
-	long long	meal_prev;
-	int			meal_count;
-	int			die_t;
-	int			eat_t;
-	int			sleep_t;
-	pthread_mutex_t			*right_f;
-	pthread_mutex_t			*left_f;
-	pthread_mutex_t			*m;
-	t_info		*info;
-}	t_philo;
+typedef struct s_philo {
+    int id;
+    long long meal_prev;
+    int meal_count;
+    int die_t;
+    int eat_t;
+    int sleep_t;
+    int left_fork_id;
+    int right_fork_id;
+    pthread_mutex_t *left_f;
+    pthread_mutex_t *right_f;
+    pthread_mutex_t *m;
+    pthread_t id_thread; // Added this line
+    struct s_info *info;
+} t_philo;
 
-typedef struct s_info
-{
-	int				nbr_philo;
-	int				ms_to_starve;
-	int				ms_to_eat;
-	int				ms_to_sleep;
-	int				times_eating;
-	pthread_mutex_t	*continue_mut;
-	pthread_mutex_t	*meal_count_mutex;
-	int				continue_sim;
-	long long		start;
-	pthread_t		tracker;
-	pthread_mutex_t	print;
-	int			dead;
-	int 		ate;
-	pthread_mutex_t	mut_dead;
-	pthread_mutex_t	mut_meal;
-	pthread_mutex_t	mut_write;
-	pthread_mutex_t	*status;
-	t_philo			**philos;
-}	t_info;
+typedef struct s_info {
+    int nbr_philo;
+    int ms_to_starve;
+    int ms_to_eat;
+    int ms_to_sleep;
+    int times_eating;
+    int continue_sim;
+    int dead;
+    int ate;
+    int full_philos;
+    long long start;
+    pthread_t tracker;
+    pthread_mutex_t *status;
+    pthread_mutex_t print;
+    pthread_mutex_t mut_dead;
+    pthread_mutex_t mut_meal;
+    pthread_mutex_t mut_write;
+    pthread_mutex_t mut_full;
+    pthread_mutex_t *continue_mut;
+    pthread_mutex_t *meal_count_mutex;
+    t_philo **philos;
+} t_info;
 
 int check_args(int argc, char **argv);
 int check_parameters(t_info *info);

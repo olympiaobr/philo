@@ -78,8 +78,11 @@ void	cleanup(t_info *info)
 	pthread_mutex_destroy(&info->mut_dead);
 	pthread_mutex_destroy(&info->mut_meal);
 	pthread_mutex_destroy(&info->mut_write);
+	pthread_mutex_destroy(&info->mut_full);
 	pthread_mutex_destroy(info->continue_mut);
 	pthread_mutex_destroy(info->meal_count_mutex);
+	free(info->continue_mut);
+	free(info->meal_count_mutex);
 	index = 0;
 	while (index < info->nbr_philo)
 	{

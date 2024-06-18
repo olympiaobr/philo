@@ -67,19 +67,30 @@ void	ft_err(char *err)
 	ft_putstr_fd(err, 2);
 }
 
+int parse_sign(const char **str)
+{
+    int sign;
+
+    sign = 1;
+    if (**str == '-' || **str == '+')
+    {
+        if (**str == '-')
+        {
+            sign = -1;
+        }
+        (*str)++;
+    }
+    return sign;
+}
+
 int custom_atoi(const char *str, int *result)
 {
     long long res;
     int sign;
 
     res = 0;
-    sign = 1;
-    if (*str == '-' || *str == '+')
-    {
-        if (*str == '-')
-            sign = -1;
-        str++;
-    }
+    sign = parse_sign(&str);
+
     while (digits_only(*str))
     {
         res = res * 10 + (*str - '0');
@@ -95,14 +106,16 @@ int custom_atoi(const char *str, int *result)
         }
         str++;
     }
+
     *result = (int)(res * sign);
     return 1;
 }
 
 int check_int(const char *str, int *result)
 {
-    const char *temp = str;
+    const char *temp;
 
+	temp = str;
     while (*str == ' ' || (*str >= 9 && *str <= 13))
         str++;
     if (*str == '-' || *str == '+')

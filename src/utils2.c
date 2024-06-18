@@ -38,15 +38,6 @@ long long	time_diff(long long start_time, t_info *info)
 	return (current_t - start_time);
 }
 
-void	custom_usleep(long long time_in_ms)
-{
-	long long	start_time;
-	long long	current_t;
-
-	start_time = get_the_time();
-	while ((current_t = get_the_time()) - start_time < time_in_ms)
-		usleep(100);
-}
 int	death_check(t_philo *philo)
 {
 	int	is_dead;
@@ -57,21 +48,18 @@ int	death_check(t_philo *philo)
 	return (is_dead);
 }
 
-void	print_message(t_philo *philo, char *message)
-{
-	long long	timestamp;
+void print_message(t_philo *philo, char *message) {
+    long long timestamp;
 
-	pthread_mutex_lock(&philo->info->mut_dead);
-	if (philo->info->dead && strcmp(message, "died") != 0)
-	{
-		pthread_mutex_unlock(&philo->info->mut_dead);
-		return ;
-	}
-	pthread_mutex_unlock(&philo->info->mut_dead);
-	pthread_mutex_lock(&philo->info->mut_write);
-	timestamp = time_diff(philo->info->start, NULL);
-	pthread_mutex_unlock(&philo->info->mut_write);
-	pthread_mutex_lock(&philo->info->print);
-	printf("%lld %d %s\n", timestamp, philo->id, message);
-	pthread_mutex_unlock(&philo->info->print);
+    pthread_mutex_lock(&philo->info->print);
+    pthread_mutex_lock(&philo->info->mut_dead);
+    if (philo->info->dead && strcmp(message, "died") != 0) {
+        pthread_mutex_unlock(&philo->info->mut_dead);
+        pthread_mutex_unlock(&philo->info->print);
+        return;
+    }
+    timestamp = time_diff(philo->info->start, NULL);
+    printf("%lld %d %s\n", timestamp, philo->id, message);
+    pthread_mutex_unlock(&philo->info->mut_dead);
+    pthread_mutex_unlock(&philo->info->print);
 }

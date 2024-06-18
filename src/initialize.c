@@ -66,15 +66,18 @@ void free_info(t_info *info, char *err_msg, int status)
     }
     exit(status);
 }
-void init_mutexes(t_info *info)
+
+void	init_mutexes(t_info *info)
 {
+	int	i;
+
 	if (pthread_mutex_init(&info->print, NULL) != 0 ||
 		pthread_mutex_init(&info->mut_dead, NULL) != 0 ||
 		pthread_mutex_init(&info->mut_meal, NULL) != 0 ||
-		pthread_mutex_init(&info->mut_write, NULL) != 0)
+		pthread_mutex_init(&info->mut_write, NULL) != 0 ||
+		pthread_mutex_init(&info->mut_full, NULL) != 0)
 	{
 		free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
-
 	}
 	info->continue_mut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
 	info->meal_count_mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
@@ -87,7 +90,22 @@ void init_mutexes(t_info *info)
 	{
 		free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
 	}
+	info->status = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * info->nbr_philo);
+	if (!info->status)
+	{
+		free_info(info, "Error: Memory allocation failed for mutexes.\n", EXIT_FAILURE);
+	}
+	i = 0;
+	while (i < info->nbr_philo)
+	{
+		if (pthread_mutex_init(&info->status[i], NULL) != 0)
+		{
+			free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
+		}
+		i++;
+	}
 }
+
 
 void begin_philosophy(t_info *info, int argc, char **argv)
 {
@@ -114,9 +132,9 @@ void begin_philosophy(t_info *info, int argc, char **argv)
 	info->continue_sim = 1;
 	info->dead = 0;
 	info->ate = 0;
+	info->full_philos = 0;
 	init_mutexes(info);
 	info->philos = (t_philo **)malloc(sizeof(t_philo *) * info->nbr_philo);
-	info->status = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t) * info->nbr_philo);
 	if (!info->philos || !info->status)
 	{
         free_info(info, "Error: Memory allocation failed for philosopher or status mutexes.\n", EXIT_FAILURE);
