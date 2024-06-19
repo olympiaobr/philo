@@ -24,47 +24,48 @@ int	dead(t_philo *philo)
 	return (not_eating);
 }
 
-int fed_philoss(t_info *info)
+int	fed_philoss(t_info *info)
 {
-    int i;
-    int fed_philos;
+	int	i;
+	int	fed_philos;
 
-    i = 0;
-    fed_philos = 0;
-    while (i < info->nbr_philo)
-    {
-        pthread_mutex_lock(info->philos[i]->m);
-        if (info->philos[i]->meal_count >= info->times_eating)
-            fed_philos++;
-        pthread_mutex_unlock(info->philos[i]->m);
-        i++;
-    }
-    return fed_philos;
+	i = 0;
+	fed_philos = 0;
+	while (i < info->nbr_philo)
+	{
+		pthread_mutex_lock(info->philos[i]->m);
+		if (info->philos[i]->meal_count >= info->times_eating)
+			fed_philos++;
+		pthread_mutex_unlock(info->philos[i]->m);
+		i++;
+	}
+	return (fed_philos);
 }
 
-int track_fullness(t_info *info)
+int	track_fullness(t_info *info)
 {
-    int fed_philos;
+	int	fed_philos;
 
-    if (info->times_eating == -1)
-        return (0);
-    fed_philos = fed_philoss(info);
-    if (fed_philos == info->nbr_philo)
-    {
-        pthread_mutex_lock(&info->mut_dead);
-        if (info->dead == 0)
-        {
-            info->dead = 1;
-            pthread_mutex_unlock(&info->mut_dead);
-            pthread_mutex_lock(&info->print);
-            printf("All philosophers have eaten %d times\n", info->times_eating);
-            pthread_mutex_unlock(&info->print);
-            info->continue_sim = 0;
-            return (1);
-        }
-        pthread_mutex_unlock(&info->mut_dead);
-    }
-    return (0);
+	if (info->times_eating == -1)
+		return (0);
+	fed_philos = fed_philoss(info);
+	if (fed_philos == info->nbr_philo)
+	{
+		pthread_mutex_lock(&info->mut_dead);
+		if (info->dead == 0)
+		{
+			info->dead = 1;
+			pthread_mutex_unlock(&info->mut_dead);
+			pthread_mutex_lock(&info->print);
+			printf("All philosophers have eaten %d times\n",
+				info->times_eating);
+			pthread_mutex_unlock(&info->print);
+			info->continue_sim = 0;
+			return (1);
+		}
+		pthread_mutex_unlock(&info->mut_dead);
+	}
+	return (0);
 }
 
 int	track_death(t_info *info)
@@ -92,25 +93,25 @@ int	track_death(t_info *info)
 	return (0);
 }
 
-void *philo_supervision(void *arg)
+void	*philo_supervision(void *arg)
 {
-    t_info *info = (t_info *)arg;
+	t_info	*info;
 
-    while (1)
-    {
-        pthread_mutex_lock(&info->mut_dead);
-        if (info->dead)
-        {
-            pthread_mutex_unlock(&info->mut_dead);
-            break;
-        }
-        pthread_mutex_unlock(&info->mut_dead);
-
-        if (track_fullness(info))
-            break;
-        if (track_death(info))
-            break;
-        usleep(100);
-    }
-    return NULL;
+	info = (t_info *)arg;
+	while (1)
+	{
+		pthread_mutex_lock(&info->mut_dead);
+		if (info->dead)
+		{
+			pthread_mutex_unlock(&info->mut_dead);
+			break ;
+		}
+		pthread_mutex_unlock(&info->mut_dead);
+		if (track_fullness(info))
+			break ;
+		if (track_death(info))
+			break ;
+		usleep(100);
+	}
+	return (NULL);
 }

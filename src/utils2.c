@@ -12,24 +12,24 @@
 
 #include "../philosophers.h"
 
-int check_int(const char *str, int *result)
+int	check_int(const char *str, int *result)
 {
-    const char *temp;
+	const char	*temp;
 
 	temp = str;
-    while (*str == ' ' || (*str >= 9 && *str <= 13))
-        str++;
-    if (*str == '-' || *str == '+')
-    {
-        str++;
-        if (!digits_only(*str))
-            return 0;
-    }
-    while (digits_only(*str))
-        str++;
-    if (*str != '\0')
-        return 0;
-    return custom_atoi(temp, result);
+	while (*str == ' ' || (*str >= 9 && *str <= 13))
+		str++;
+	if (*str == '-' || *str == '+')
+	{
+		str++;
+		if (!digits_only(*str))
+			return (0);
+	}
+	while (digits_only(*str))
+		str++;
+	if (*str != '\0')
+		return (0);
+	return (custom_atoi(temp, result));
 }
 
 long long	get_the_time(void)
@@ -68,20 +68,20 @@ int	death_check(t_philo *philo)
 	return (is_dead);
 }
 
-void print_message(t_philo *philo, char *message)
+void	print_message(t_philo *philo, char *message)
 {
-    long long timestamp;
+	long long	timestamp;
 
-    pthread_mutex_lock(&philo->info->print);
-    pthread_mutex_lock(&philo->info->mut_dead);
-    if (philo->info->dead && strcmp(message, "died") != 0)
+	pthread_mutex_lock(&philo->info->print);
+	pthread_mutex_lock(&philo->info->mut_dead);
+	if (philo->info->dead && strcmp(message, "died") != 0)
 	{
-        pthread_mutex_unlock(&philo->info->mut_dead);
-        pthread_mutex_unlock(&philo->info->print);
-        return;
-    }
-    timestamp = time_diff(philo->info->start, NULL);
-    printf("%lld %d %s\n", timestamp, philo->id, message);
-    pthread_mutex_unlock(&philo->info->mut_dead);
-    pthread_mutex_unlock(&philo->info->print);
+		pthread_mutex_unlock(&philo->info->mut_dead);
+		pthread_mutex_unlock(&philo->info->print);
+		return ;
+	}
+	timestamp = time_diff(philo->info->start, NULL);
+	printf("%lld %d %s\n", timestamp, philo->id, message);
+	pthread_mutex_unlock(&philo->info->mut_dead);
+	pthread_mutex_unlock(&philo->info->print);
 }

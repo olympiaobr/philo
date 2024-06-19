@@ -29,51 +29,50 @@ void	ft_putstr_fd(char *s, int fd)
 		s++;
 	}
 }
+
 void	ft_err(char *err)
 {
 	ft_putstr_fd(err, 2);
 }
 
-int parse_sign(const char **str)
+int	parse_sign(const char **str)
 {
-    int sign;
+	int	sign;
 
-    sign = 1;
-    if (**str == '-' || **str == '+')
-    {
-        if (**str == '-')
-        {
-            sign = -1;
-        }
-        (*str)++;
-    }
-    return sign;
+	sign = 1;
+	if (**str == '-' || **str == '+')
+	{
+		if (**str == '-')
+		{
+			sign = -1;
+		}
+		(*str)++;
+	}
+	return (sign);
 }
 
-int custom_atoi(const char *str, int *result)
+int	custom_atoi(const char *str, int *result)
 {
-    long long res;
-    int sign;
+	long long	res;
+	int			sign;
 
-    res = 0;
-    sign = parse_sign(&str);
-
-    while (digits_only(*str))
-    {
-        res = res * 10 + (*str - '0');
-        if (sign == 1 && res > INT_MAX)
-        {
-            *result = INT_MAX;
-            return 0;
-        }
-        if (sign == -1 && -res < INT_MIN)
-        {
-            *result = INT_MIN;
-            return 0;
-        }
-        str++;
-    }
-
-    *result = (int)(res * sign);
-    return 1;
+	res = 0;
+	sign = parse_sign(&str);
+	while (digits_only(*str))
+	{
+		res = res * 10 + (*str - '0');
+		if (sign == 1 && res > INT_MAX)
+		{
+			*result = INT_MAX;
+			return (0);
+		}
+		if (sign == -1 && -res < INT_MIN)
+		{
+			*result = INT_MIN;
+			return (0);
+		}
+		str++;
+	}
+	*result = (int)(res * sign);
+	return (1);
 }
