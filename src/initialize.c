@@ -66,37 +66,38 @@ void	init_forks(t_info *info)
 	}
 }
 
-void init_additional_mutexes(t_info *info)
+void	init_additional_mutexes(t_info *info)
 {
-    info->continue_mut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-    info->meal_count_mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
-    if (!info->continue_mut || !info->meal_count_mutex)
-    {
-        free_info(info, "Error: Memory allocation failed for mutexes.\n", EXIT_FAILURE);
-    }
-    if (pthread_mutex_init(info->continue_mut, NULL) != 0
-        || pthread_mutex_init(info->meal_count_mutex, NULL) != 0)
-    {
-        free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
-    }
-    info->status = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
-            * info->nbr_philo);
-    if (!info->status)
-    {
-        free_info(info, "Error: Memory allocation failed for mutexes.\n", EXIT_FAILURE);
-    }
+	info->continue_mut = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	info->meal_count_mutex = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t));
+	if (!info->continue_mut || !info->meal_count_mutex)
+	{
+		free_info(info, "Error: Memory allocation failed for mutexes.\n",
+			EXIT_FAILURE);
+	}
+	if (pthread_mutex_init(info->continue_mut, NULL) != 0
+		|| pthread_mutex_init(info->meal_count_mutex, NULL) != 0)
+	{
+		free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
+	}
+	info->status = (pthread_mutex_t *)malloc(sizeof(pthread_mutex_t)
+			* info->nbr_philo);
+	if (!info->status)
+	{
+		free_info(info, "Error: Memory allocation failed for mutexes.\n",
+			EXIT_FAILURE);
+	}
 }
 
-void init_mutexes(t_info *info)
+void	init_mutexes(t_info *info)
 {
-    if (pthread_mutex_init(&info->print, NULL) != 0
-        || pthread_mutex_init(&info->mut_dead, NULL) != 0
-        || pthread_mutex_init(&info->mut_meal, NULL) != 0
-        || pthread_mutex_init(&info->mut_write, NULL) != 0
-        || pthread_mutex_init(&info->mut_full, NULL) != 0)
-    {
-        free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
-    }
-
-    init_additional_mutexes(info);
+	if (pthread_mutex_init(&info->print, NULL) != 0
+		|| pthread_mutex_init(&info->mut_dead, NULL) != 0
+		|| pthread_mutex_init(&info->mut_meal, NULL) != 0
+		|| pthread_mutex_init(&info->mut_write, NULL) != 0
+		|| pthread_mutex_init(&info->mut_full, NULL) != 0)
+	{
+		free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
+	}
+	init_additional_mutexes(info);
 }

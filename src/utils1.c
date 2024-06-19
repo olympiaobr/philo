@@ -66,7 +66,7 @@ int	custom_atoi(const char *str, int *result)
 			*result = INT_MAX;
 			return (0);
 		}
-		if (sign == -1 && -res < INT_MIN)
+		if (sign == (-1) && (-res) < INT_MIN)
 		{
 			*result = INT_MIN;
 			return (0);
