@@ -39,7 +39,28 @@ int check_args(int argc, char **argv)
     }
     return (1);
 }
-
+void process_args(t_info *info, int argc, char **argv)
+{
+    if (!check_int(argv[1], &info->nbr_philo) ||
+        !check_int(argv[2], &info->ms_to_starve) ||
+        !check_int(argv[3], &info->ms_to_eat) ||
+        !check_int(argv[4], &info->ms_to_sleep))
+    {
+        free_info(info, "Error: Invalid arguments.\n", EXIT_FAILURE);
+    }
+    if (argc == 6)
+    {
+        if (!check_int(argv[5], &info->times_eating))
+        {
+            ft_err("Error: Invalid fifth argument.\n");
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        info->times_eating = -1;
+    }
+}
 
 int check_parameters(t_info *info)
 {
@@ -56,6 +77,10 @@ int check_parameters(t_info *info)
     return 1;
 }
 
+void	supervision(t_info *info)
+{
+	pthread_create(&info->tracker, NULL, &philo_supervision, (void *)info);
+}
 
 int main(int argc, char **argv)
 {

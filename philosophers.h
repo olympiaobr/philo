@@ -80,13 +80,16 @@ int check_parameters(t_info *info);
 void	init_philosophers(t_info *info);
 void	init_forks(t_info *info);
 void init_mutexes(t_info *info);
+void process_args(t_info *info, int argc, char **argv);
 void begin_philosophy(t_info *info, int argc, char **argv);
 
-/*	actions	*/
 void	philo_sleep(t_philo *philo);
 void	philo_think(t_philo *philo);
 void	philo_eat(t_philo *philo);
 void	*philo_activities(void *arg);
+void handle_single_philo(t_philo *philo, pthread_mutex_t *first_fork);
+void check_conditions(t_philo *philo);
+
 int	start_philosopher_threads(t_info *info);
 int	thread_termination(t_info *info);
 void	cleanup(t_info *info);
@@ -98,7 +101,6 @@ void	*philo_supervision(void *arg);
 void	supervision(t_info *info);
 int main(int argc, char **argv);
 
-/*	utils	*/
 int check_int(const char *str, int *result);
 void	ft_err(char *err);
 int custom_atoi(const char *str, int *result);

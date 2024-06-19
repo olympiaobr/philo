@@ -12,37 +12,7 @@
 
 #include "../philosophers.h"
 
-void philo_sleep(t_philo *philo)
-{
-    print_message(philo, "is sleeping");
-    usleep(philo->sleep_t * 1000);
-    pthread_mutex_lock(&philo->info->mut_dead);
-    if (!philo->info->dead && dead(philo))
-	{
-        philo->info->dead = 1;
-        pthread_mutex_unlock(&philo->info->mut_dead);
-        print_message(philo, "died");
-        return;
-    }
-    pthread_mutex_unlock(&philo->info->mut_dead);
-}
-
-void philo_think(t_philo *philo)
-{
-    print_message(philo, "is thinking");
-	usleep(1000);
-    pthread_mutex_lock(&philo->info->mut_dead);
-    if (!philo->info->dead && dead(philo))
-	{
-        philo->info->dead = 1;
-        pthread_mutex_unlock(&philo->info->mut_dead);
-        print_message(philo, "died");
-        return;
-    }
-    pthread_mutex_unlock(&philo->info->mut_dead);
-}
-
-void takes_forks(t_philo *philo)
+void take_forks(t_philo *philo)
 {
     pthread_mutex_t *first_fork;
     pthread_mutex_t *second_fork;
@@ -62,22 +32,15 @@ void takes_forks(t_philo *philo)
     print_message(philo, "has taken a fork");
     if (philo->info->nbr_philo == 1)
     {
-        usleep(philo->die_t * 1000);
-        pthread_mutex_unlock(first_fork);
-        print_message(philo, "died");
-        pthread_mutex_lock(&philo->info->mut_dead);
-        philo->info->dead = 1;
-        pthread_mutex_unlock(&philo->info->mut_dead);
+        handle_single_philo(philo, first_fork);
         return;
     }
     pthread_mutex_lock(second_fork);
     print_message(philo, "has taken a fork");
 }
 
-void philo_eat(t_philo *philo)
+void check_full(t_philo *philo)
 {
-    long long current_time;
-
     pthread_mutex_lock(&philo->info->mut_full);
     if (philo->info->full_philos >= philo->info->nbr_philo)
     {
@@ -85,12 +48,12 @@ void philo_eat(t_philo *philo)
         return;
     }
     pthread_mutex_unlock(&philo->info->mut_full);
+}
 
-    takes_forks(philo);
-    if (philo->info->nbr_philo == 1)
-    {
-        return;
-    }
+void eat_action(t_philo *philo)
+{
+    long long current_time;
+
     print_message(philo, "is eating");
     current_time = get_the_time();
     pthread_mutex_lock(philo->m);
@@ -98,7 +61,17 @@ void philo_eat(t_philo *philo)
     philo->meal_count++;
     pthread_mutex_unlock(philo->m);
     usleep(philo->eat_t * 1000);
+}
 
+void philo_eat(t_philo *philo)
+{
+    check_full(philo);
+    take_forks(philo);
+    if (philo->info->nbr_philo == 1)
+    {
+        return;
+    }
+    eat_action(philo);
     if (philo->id % 2 == 0)
     {
         pthread_mutex_unlock(philo->left_f);
@@ -109,7 +82,6 @@ void philo_eat(t_philo *philo)
         pthread_mutex_unlock(philo->right_f);
         pthread_mutex_unlock(philo->left_f);
     }
-
     if (philo->meal_count >= philo->info->times_eating && philo->info->times_eating != -1)
     {
         pthread_mutex_lock(&philo->info->mut_full);
@@ -129,20 +101,7 @@ void *philo_activities(void *arg)
     }
     while (1)
     {
-        pthread_mutex_lock(&philo->info->mut_dead);
-        if (philo->info->dead)
-        {
-            pthread_mutex_unlock(&philo->info->mut_dead);
-            break;
-        }
-        pthread_mutex_unlock(&philo->info->mut_dead);
-        pthread_mutex_lock(&philo->info->mut_full);
-        if (philo->info->full_philos >= philo->info->nbr_philo)
-        {
-            pthread_mutex_unlock(&philo->info->mut_full);
-            break;
-        }
-        pthread_mutex_unlock(&philo->info->mut_full);
+        check_conditions(philo);
         philo_eat(philo);
         if (philo->info->nbr_philo == 1)
         {
@@ -153,4 +112,3 @@ void *philo_activities(void *arg)
     }
     return NULL;
 }
-

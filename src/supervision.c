@@ -24,15 +24,13 @@ int	dead(t_philo *philo)
 	return (not_eating);
 }
 
-int track_fullness(t_info *info)
+int fed_philoss(t_info *info)
 {
     int i;
     int fed_philos;
 
     i = 0;
     fed_philos = 0;
-    if (info->times_eating == -1)
-        return (0);
     while (i < info->nbr_philo)
     {
         pthread_mutex_lock(info->philos[i]->m);
@@ -41,6 +39,16 @@ int track_fullness(t_info *info)
         pthread_mutex_unlock(info->philos[i]->m);
         i++;
     }
+    return fed_philos;
+}
+
+int track_fullness(t_info *info)
+{
+    int fed_philos;
+
+    if (info->times_eating == -1)
+        return (0);
+    fed_philos = fed_philoss(info);
     if (fed_philos == info->nbr_philo)
     {
         pthread_mutex_lock(&info->mut_dead);
@@ -105,9 +113,4 @@ void *philo_supervision(void *arg)
         usleep(100);
     }
     return NULL;
-}
-
-void	supervision(t_info *info)
-{
-	pthread_create(&info->tracker, NULL, &philo_supervision, (void *)info);
 }

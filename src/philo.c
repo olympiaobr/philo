@@ -56,16 +56,26 @@ int	thread_termination(t_info *info)
 	}
 	return (EXIT_SUCCESS);
 }
-void	cleanup(t_info *info)
-{
-	int	index;
 
-	if (!info)
-        return;
-	index = 0;
-	while (index < info->nbr_philo)
-	{
-		if (info->philos[index])
+void free_info(t_info *info, char *err_msg, int status)
+{
+    if (err_msg)
+        ft_putstr_fd(err_msg, 2);
+    if (info)
+    {
+        cleanup(info);
+        free(info);
+    }
+    exit(status);
+}
+void cleanup_philosophers(t_info *info)
+{
+    int index;
+
+    index = 0;
+    while (index < info->nbr_philo)
+    {
+        if (info->philos[index])
         {
             if (info->philos[index]->m)
                 pthread_mutex_destroy(info->philos[index]->m);
@@ -74,21 +84,31 @@ void	cleanup(t_info *info)
         }
         index++;
     }
-	pthread_mutex_destroy(&info->print);
-	pthread_mutex_destroy(&info->mut_dead);
-	pthread_mutex_destroy(&info->mut_meal);
-	pthread_mutex_destroy(&info->mut_write);
-	pthread_mutex_destroy(&info->mut_full);
-	pthread_mutex_destroy(info->continue_mut);
-	pthread_mutex_destroy(info->meal_count_mutex);
-	free(info->continue_mut);
-	free(info->meal_count_mutex);
-	index = 0;
-	while (index < info->nbr_philo)
-	{
-		pthread_mutex_destroy(&info->status[index]);
-		index++;
-	}
-	free(info->status);
-	free(info->philos);
 }
+
+void cleanup(t_info *info)
+{
+    int index;
+
+    if (!info)
+        return;
+    cleanup_philosophers(info);
+    pthread_mutex_destroy(&info->print);
+    pthread_mutex_destroy(&info->mut_dead);
+    pthread_mutex_destroy(&info->mut_meal);
+    pthread_mutex_destroy(&info->mut_write);
+    pthread_mutex_destroy(&info->mut_full);
+    pthread_mutex_destroy(info->continue_mut);
+    pthread_mutex_destroy(info->meal_count_mutex);
+    free(info->continue_mut);
+    free(info->meal_count_mutex);
+    index = 0;
+    while (index < info->nbr_philo)
+    {
+        pthread_mutex_destroy(&info->status[index]);
+        index++;
+    }
+    free(info->status);
+    free(info->philos);
+}
+

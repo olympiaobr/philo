@@ -7,7 +7,7 @@ CFLAGS = -Wextra -Wall -Werror -g -pthread
 SRC	=	src/main.c src/utils1.c\
 		src/initialize.c src/actions.c\
 		src/philo.c src/utils2.c\
-		src/supervision.c
+		src/supervision.c src/actions2.c
 
 OBJS	=	$(SRC:.c=.o)
 
