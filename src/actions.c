@@ -61,7 +61,7 @@ void takes_forks(t_philo *philo)
     print_message(philo, "has taken a fork");
     if (philo->info->nbr_philo == 1)
 	{
-        usleep(philo->die_t * 1000)
+        usleep(philo->die_t * 1000);
         pthread_mutex_unlock(first_fork);
         print_message(philo, "died");
         pthread_mutex_lock(&philo->info->mut_dead);
