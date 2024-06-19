@@ -48,12 +48,14 @@ int	death_check(t_philo *philo)
 	return (is_dead);
 }
 
-void print_message(t_philo *philo, char *message) {
+void print_message(t_philo *philo, char *message)
+{
     long long timestamp;
 
     pthread_mutex_lock(&philo->info->print);
     pthread_mutex_lock(&philo->info->mut_dead);
-    if (philo->info->dead && strcmp(message, "died") != 0) {
+    if (philo->info->dead && strcmp(message, "died") != 0)
+	{
         pthread_mutex_unlock(&philo->info->mut_dead);
         pthread_mutex_unlock(&philo->info->print);
         return;

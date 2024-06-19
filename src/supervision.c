@@ -90,19 +90,22 @@ int	track_death(t_info *info)
 	return (0);
 }
 
-void *philo_supervision(void *arg) {
+void *philo_supervision(void *arg)
+{
     t_info *info = (t_info *)arg;
 
-    while (1) {
+    while (1)
+    {
         pthread_mutex_lock(&info->mut_dead);
-        if (info->dead) {
+        if (info->dead)
+        {
             pthread_mutex_unlock(&info->mut_dead);
             break;
         }
         pthread_mutex_unlock(&info->mut_dead);
-
         pthread_mutex_lock(&info->mut_full);
-        if (info->full_philos == info->nbr_philo) {
+        if (info->full_philos == info->nbr_philo)
+        {
             pthread_mutex_unlock(&info->mut_full);
             pthread_mutex_lock(&info->mut_dead);
             info->dead = 1;
@@ -113,9 +116,8 @@ void *philo_supervision(void *arg) {
             break;
         }
         pthread_mutex_unlock(&info->mut_full);
-
-        if (track_death(info)) break;
-
+        if (track_death(info))
+            break;
         usleep(50);
     }
     return NULL;

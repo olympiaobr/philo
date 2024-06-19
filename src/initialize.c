@@ -14,7 +14,9 @@
 
 void	init_philosophers(t_info *info)
 {
-    int i = 0;
+    int i;
+
+	i = 0;
     while (i < info->nbr_philo)
     {
         info->philos[i] = (t_philo *)malloc(sizeof(t_philo));
@@ -69,8 +71,6 @@ void free_info(t_info *info, char *err_msg, int status)
 
 void	init_mutexes(t_info *info)
 {
-	int	i;
-
 	if (pthread_mutex_init(&info->print, NULL) != 0 ||
 		pthread_mutex_init(&info->mut_dead, NULL) != 0 ||
 		pthread_mutex_init(&info->mut_meal, NULL) != 0 ||
@@ -94,15 +94,6 @@ void	init_mutexes(t_info *info)
 	if (!info->status)
 	{
 		free_info(info, "Error: Memory allocation failed for mutexes.\n", EXIT_FAILURE);
-	}
-	i = 0;
-	while (i < info->nbr_philo)
-	{
-		if (pthread_mutex_init(&info->status[i], NULL) != 0)
-		{
-			free_info(info, "Error: Mutex initialization failed.\n", EXIT_FAILURE);
-		}
-		i++;
 	}
 }
 

@@ -4,8 +4,6 @@ CC		=	cc
 
 CFLAGS = -Wextra -Wall -Werror -g -pthread
 
-DEBUG	= -fsanitize=thread
-
 SRC	=	src/main.c src/utils1.c\
 		src/initialize.c src/actions.c\
 		src/philo.c src/utils2.c\

@@ -12,7 +12,6 @@
 
 #include "../philosophers.h"
 
-//this function takes argc and argv as arguments and checks if the arguments are valid
 int check_args(int argc, char **argv)
 {
     int temp;
