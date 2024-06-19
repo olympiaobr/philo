@@ -36,19 +36,18 @@ typedef enum s_action
 	DIED,
 }	t_action;
 
-typedef struct s_philo {
+typedef struct s_philo
+{
     int id;
     long long meal_prev;
     int meal_count;
     int die_t;
     int eat_t;
     int sleep_t;
-    int left_fork_id;
-    int right_fork_id;
     pthread_mutex_t *left_f;
     pthread_mutex_t *right_f;
     pthread_mutex_t *m;
-    pthread_t id_thread; // Added this line
+    pthread_t id_thread;
     struct s_info *info;
 } t_philo;
 
@@ -93,7 +92,6 @@ int	thread_termination(t_info *info);
 void	cleanup(t_info *info);
 
 int	dead(t_philo *philo);
-int	all_philos_fed(t_info *info);
 int	track_fullness(t_info *info);
 int	track_death(t_info *info);
 void	*philo_supervision(void *arg);
@@ -103,10 +101,9 @@ int main(int argc, char **argv);
 /*	utils	*/
 int check_int(const char *str, int *result);
 void	ft_err(char *err);
-void	custom_usleep(long long time_in_ms);
+int custom_atoi(const char *str, int *result);
 int	digits_only(int c);
 void	ft_putstr_fd(char *s, int fd);
-size_t	ft_strlen(const char *s);
 long long	get_the_time(void);
 long long	time_diff(long long start_time, t_info *info);
 int	death_check(t_philo *philo);

@@ -76,7 +76,8 @@ int main(int argc, char **argv)
 
 	}
 	supervision(&info);
-	if (thread_termination(&info)) {
+	if (thread_termination(&info))
+	{
         free_info(&info, "Error terminating philosopher threads.\n", EXIT_FAILURE);
     }
     cleanup(&info);

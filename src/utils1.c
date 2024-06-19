@@ -19,39 +19,6 @@ int	digits_only(int c)
 	return (0);
 }
 
-int	string_check(char *str)
-
-{
-	int	i;
-
-	if (!str)
-		return (0);
-	i = 0;
-	if (str[i] == '+' || str[i] == '-')
-		i++;
-	while (str[i])
-	{
-		if (!digits_only(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
-}
-
-size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	if (s == NULL)
-		return (0);
-	while (s[i] != '\0')
-	{
-		i++;
-	}
-	return (i);
-}
-
 void	ft_putstr_fd(char *s, int fd)
 {
 	if (!s)
@@ -109,24 +76,4 @@ int custom_atoi(const char *str, int *result)
 
     *result = (int)(res * sign);
     return 1;
-}
-
-int check_int(const char *str, int *result)
-{
-    const char *temp;
-
-	temp = str;
-    while (*str == ' ' || (*str >= 9 && *str <= 13))
-        str++;
-    if (*str == '-' || *str == '+')
-    {
-        str++;
-        if (!digits_only(*str))
-            return 0;
-    }
-    while (digits_only(*str))
-        str++;
-    if (*str != '\0')
-        return 0;
-    return custom_atoi(temp, result);
 }

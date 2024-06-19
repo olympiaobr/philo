@@ -12,6 +12,26 @@
 
 #include "../philosophers.h"
 
+int check_int(const char *str, int *result)
+{
+    const char *temp;
+
+	temp = str;
+    while (*str == ' ' || (*str >= 9 && *str <= 13))
+        str++;
+    if (*str == '-' || *str == '+')
+    {
+        str++;
+        if (!digits_only(*str))
+            return 0;
+    }
+    while (digits_only(*str))
+        str++;
+    if (*str != '\0')
+        return 0;
+    return custom_atoi(temp, result);
+}
+
 long long	get_the_time(void)
 {
 	struct timeval	t;
